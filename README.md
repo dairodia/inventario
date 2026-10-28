@@ -1,2 +1,0 @@
-# inventario
-inventario 
