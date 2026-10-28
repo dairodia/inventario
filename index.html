@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Inventario</title>
-  <link rel="stylesheet" href="/css/styles.css">
+  <!-- Aquí corregimos la ruta: sin la barra inicial y con el punto de la carpeta -->
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
   <header class="topbar">
@@ -53,9 +54,25 @@
         </table>
       </div>
       <p class="small-note">Los datos se guardan en Cloud Firestore cuando configures tu proyecto.</p>
-  
+    </section> <!-- ¡Aquí faltaba cerrar esta etiqueta! -->
+
+    <!-- SECCIÓN DE CONFIGURACIÓN -->
+    <section class="panel setup">
+      <h2>Conectar con Firebase</h2>
+      <p>Esta plantilla ya tiene las operaciones para crear, leer, editar y eliminar productos. Para activarlas, abre <strong>firebase.js</strong> y pega la configuración de tu proyecto Firebase.</p>
+      <ol>
+        <li>Crea un proyecto en Firebase Console.</li>
+        <li>Agrega una aplicación web y copia la configuración.</li>
+        <li>Activa Cloud Firestore en modo de producción y crea la base de datos.</li>
+        <li>Activa Authentication con correo y contraseña (recomendado para proteger el inventario).</li>
+      </ol>
+      <p class="warning">Antes de publicar, configura reglas de seguridad de Firestore. No uses reglas abiertas en producción.</p>
+    </section>
+
   </main>
-  <footer>Inventario · Proyecto académico SENA</footer>
-  <script type="module" src="/js/app.js"></script>
+  <footer>Inventario Fácil · Proyecto académico SENA</footer>
+  
+  <!-- Aquí corregimos la ruta del JS: sin barra inicial y con el punto -->
+  <script type="module" src=".js/app.js"></script>
 </body>
 </html>
