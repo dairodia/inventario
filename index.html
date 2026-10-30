@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventario Fácil</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">CONTROL DE NEGOCIO</p>
+      <h1>Inventario Fácil</h1>
+      <p class="subtitle">Administra tus productos desde un solo lugar.</p>
+    </div>
+    <span id="connectionBadge" class="badge">Sin conectar</span>
+  </header>
+
+  <main class="container">
+    <section class="stats">
+      <article class="stat-card"><span>Productos registrados</span><strong id="totalProducts">0</strong></article>
+      <article class="stat-card"><span>Unidades en inventario</span><strong id="totalUnits">0</strong></article>
+      <article class="stat-card"><span>Valor del inventario</span><strong id="totalValue">$ 0</strong></article>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading">
+        <div><p class="eyebrow">GESTIÓN</p><h2 id="formTitle">Agregar producto</h2></div>
+        <button id="cancelEdit" class="button secondary hidden" type="button">Cancelar edición</button>
+      </div>
+      <form id="productForm">
+        <input id="productId" type="hidden">
+        <div class="form-grid">
+          <label>Nombre del producto<input id="name" required maxlength="80" placeholder="Ej. Arroz de 500 g"></label>
+          <label>Categoría<input id="category" required maxlength="50" placeholder="Ej. Granos"></label>
+          <label>Precio (COP)<input id="price" required type="number" min="0" step="1" placeholder="5000"></label>
+          <label>Cantidad disponible<input id="quantity" required type="number" min="0" step="1" placeholder="20"></label>
+        </div>
+        <button class="button primary" type="submit" id="saveButton">Guardar producto</button>
+      </form>
+      <p id="formMessage" class="message" role="status"></p>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading">
+        <div><p class="eyebrow">EXISTENCIAS</p><h2>Mis productos</h2></div>
+        <input id="search" class="search" type="search" placeholder="Buscar producto...">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Producto</th><th>Categoría</th><th>Precio</th><th>Cantidad</th><th>Acciones</th></tr></thead>
+          <tbody id="productRows"><tr><td colspan="5" class="empty">Configura Firebase para empezar.</td></tr></tbody>
+        </table>
+      </div>
+      <p class="small-note">Los datos se guardan en Cloud Firestore cuando configures tu proyecto.</p>
+    </section>
+
+    <section class="panel setup">
+      <h2>Conectar con Firebase</h2>
+      <p>Esta plantilla ya tiene las operaciones para crear, leer, editar y eliminar productos. Para activarlas, abre <strong>firebase.js</strong> y pega la configuración de tu proyecto Firebase.</p>
+      <ol>
+        <li>Crea un proyecto en Firebase Console.</li>
+        <li>Agrega una aplicación web y copia la configuración.</li>
+        <li>Activa Cloud Firestore en modo de producción y crea la base de datos.</li>
+        <li>Activa Authentication con correo y contraseña (recomendado para proteger el inventario).</li>
+      </ol>
+      <p class="warning">Antes de publicar, configura reglas de seguridad de Firestore. No uses reglas abiertas en producción.</p>
+    </section>
+  </main>
+  <footer>Inventario Fácil · Proyecto académico SENA</footer>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
