@@ -19,6 +19,7 @@ function setMessage(text, error = false) {
   message.textContent = text;
   message.style.color = error ? "#b53b3b" : "#167449";
 }
+
 function render() {
   const search = $("search").value.trim().toLowerCase();
   const filtered = products.filter(p =>
@@ -27,10 +28,12 @@ function render() {
   $("totalProducts").textContent = products.length;
   $("totalUnits").textContent = products.reduce((sum, p) => sum + Number(p.quantity || 0), 0);
   $("totalValue").textContent = money(products.reduce((sum, p) => sum + Number(p.price || 0) * Number(p.quantity || 0), 0));
+  
   if (!filtered.length) {
     rows.innerHTML = `<tr><td colspan="5" class="empty">${products.length ? "No se encontraron productos." : "Todavía no hay productos. Agrega el primero arriba."}</td></tr>`;
     return;
   }
+  
   rows.innerHTML = "";
   filtered.forEach(p => {
     const tr = document.createElement("tr");
@@ -57,6 +60,7 @@ function render() {
     rows.appendChild(tr);
   });
 }
+
 function startEdit(p) {
   $("productId").value = p.id;
   $("name").value = p.name;
@@ -68,6 +72,7 @@ function startEdit(p) {
   $("cancelEdit").classList.remove("hidden");
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
+
 function resetForm() {
   form.reset();
   $("productId").value = "";
@@ -75,6 +80,7 @@ function resetForm() {
   $("saveButton").textContent = "Guardar producto";
   $("cancelEdit").classList.add("hidden");
 }
+
 async function removeProduct(id) {
   if (!db) return setMessage("Primero configura Firebase en firebase.js.", true);
   if (!confirm("¿Seguro que quieres eliminar este producto?")) return;
@@ -86,6 +92,7 @@ async function removeProduct(id) {
     setMessage("No se pudo eliminar. Revisa la conexión y las reglas de Firestore.", true);
   }
 }
+
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!db) return setMessage("Falta conectar Firebase. Sigue los pasos de firebase.js.", true);
@@ -110,6 +117,7 @@ form.addEventListener("submit", async (event) => {
     setMessage("No se pudo guardar. Revisa las reglas de Firestore y la configuración.", true);
   }
 });
+
 $("cancelEdit").addEventListener("click", resetForm);
 $("search").addEventListener("input", render);
 
@@ -130,4 +138,5 @@ if (isConfigured && db) {
   products = [];
   render();
 }
+
 window.addEventListener("beforeunload", () => unsubscribe?.());
