@@ -84,7 +84,7 @@ $("productForm").addEventListener("submit", async (e) => {
 
 $("search").addEventListener("input", render);
 
-// --- LÓGICA DE AUTENTICACIÓN (LOGIN / REGISTRO / RECUPERAR) ---
+// --- LÓGICA DE AUTENTICACIÓN ---
 const loginMessage = $("loginMessage");
 function setMessage(text, error = false) {
   loginMessage.textContent = text;
@@ -97,14 +97,14 @@ $("goToReset").onclick = (e) => { e.preventDefault(); $("loginForm").style.displ
 $("goToLoginFromRegister").onclick = (e) => { e.preventDefault(); $("registerForm").style.display = "none"; $("loginForm").style.display = "flex"; $("authTitle").textContent = "Iniciar Sesión"; setMessage(""); };
 $("goToLoginFromReset").onclick = (e) => { e.preventDefault(); $("resetForm").style.display = "none"; $("loginForm").style.display = "flex"; $("authTitle").textContent = "Iniciar Sesión"; setMessage(""); };
 
-// Login con correo
+// Login
 $("loginForm").addEventListener("submit", async (e) => {
   e.preventDefault(); setMessage("");
   try { await signInWithEmailAndPassword(auth, $("loginEmail").value, $("loginPassword").value); }
   catch (error) { setMessage("Error: " + error.message, true); }
 });
 
-// Registro con correo
+// Registro (CORREGIDO con la "s" de registerForm)
 $("registerForm").addEventListener("submit", async (e) => {
   e.preventDefault(); setMessage("");
   if ($("registerPassword").value !== $("registerPassword2").value) return setMessage("Las contraseñas no coinciden.", true);
@@ -112,7 +112,7 @@ $("registerForm").addEventListener("submit", async (e) => {
   catch (error) { setMessage("Error: " + error.message, true); }
 });
 
-// Recuperar contraseña
+// Recuperar
 $("resetForm").addEventListener("submit", async (e) => {
   e.preventDefault(); setMessage("");
   try { 
@@ -121,7 +121,7 @@ $("resetForm").addEventListener("submit", async (e) => {
   } catch (error) { setMessage("Error: " + error.message, true); }
 });
 
-// Login con Google
+// Google
 $("googleBtn").addEventListener("click", async () => {
   const provider = new GoogleAuthProvider();
   try { await signInWithPopup(auth, provider); } catch (error) { setMessage("Error: " + error.message, true); }
@@ -130,7 +130,7 @@ $("googleBtn").addEventListener("click", async () => {
 // Cerrar sesión
 $("logoutBtn").addEventListener("click", () => signOut(auth));
 
-// --- MOSTRAR U OCULTAR PANTALLAS SEGÚN LA SESIÓN ---
+// Mostrar/Ocultar
 onAuthStateChanged(auth, (user) => {
   if (user) {
     $("loginScreen").style.display = "none";
