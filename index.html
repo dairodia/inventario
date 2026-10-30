@@ -3,38 +3,75 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inventario</title>
+  <title>Inventario Fácil</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-  <!-- PANTALLA DE LOGIN -->
-  <div id="loginScreen" style="display: flex; justify-content: center; align-items: center; height: 100vh; background: #f3f6f4;">
-    <div class="panel" style="width: 100%; max-width: 400px; text-align: center; padding: 30px;">
-      <h2>Iniciar Sesión</h2>
-      <p class="subtitle">Accede a tu inventario</p>
+  <!-- PANTALLA DE ACCESO (LOGIN / REGISTRO / RECUPERAR) -->
+  <div id="loginScreen" style="display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #f3f6f4; padding: 20px;">
+    <div class="panel" style="width: 100%; max-width: 400px; padding: 30px;">
       
-      <form id="loginForm" style="margin-top: 20px; display: flex; flex-direction: column; gap: 15px;">
-        <label style="text-align: left;">Correo electrónico
-          <input type="email" id="loginEmail" required placeholder="tu@correo.com">
+      <h2 id="authTitle" style="text-align: center; margin-bottom: 5px;">Iniciar Sesión</h2>
+      <p class="subtitle" style="text-align: center; color: #666; margin-bottom: 25px;">Accede a tu inventario</p>
+
+      <!-- FORMULARIO DE LOGIN -->
+      <form id="loginForm" style="display: flex; flex-direction: column; gap: 15px;">
+        <label style="text-align: left; font-size: 14px;">Correo
+          <input type="email" id="loginEmail" required placeholder="tu@correo.com" style="margin-top: 5px;">
         </label>
-        <label style="text-align: left;">Contraseña
-          <input type="password" id="loginPassword" required placeholder="********">
+        <label style="text-align: left; font-size: 14px;">Contraseña
+          <input type="password" id="loginPassword" required placeholder="********" style="margin-top: 5px;">
         </label>
         <button type="submit" class="button primary" style="width: 100%;">Entrar</button>
-      </form>
-      
-      <div style="margin: 15px 0; color: #666;">o</div>
-      
-      <button id="googleBtn" class="button secondary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="18"> Continuar con Google
-      </button>
+        
+        <div style="text-align: center; margin: 5px 0; color: #888;">o</div>
+        
+        <button type="button" id="googleBtn" class="button secondary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="18"> Continuar con Google
+        </button>
 
-      <p id="loginMessage" class="message" style="margin-top: 15px;"></p>
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: center; font-size: 14px; margin-top: 15px;">
+          <a href="#" id="goToReset" style="color: #167449; font-weight: bold; text-decoration: none;">¿Olvidaste tu contraseña?</a>
+          <span>¿No tienes cuenta? <a href="#" id="goToRegister" style="color: #167449; font-weight: bold; text-decoration: none;">Regístrate</a></span>
+        </div>
+      </form>
+
+      <!-- FORMULARIO DE REGISTRO (Oculto) -->
+      <form id="registerForm" style="display: none; flex-direction: column; gap: 15px;">
+        <label style="text-align: left; font-size: 14px;">Correo
+          <input type="email" id="registerEmail" required placeholder="tu@correo.com" style="margin-top: 5px;">
+        </label>
+        <label style="text-align: left; font-size: 14px;">Contraseña
+          <input type="password" id="registerPassword" required minlength="6" placeholder="Mínimo 6 caracteres" style="margin-top: 5px;">
+        </label>
+        <label style="text-align: left; font-size: 14px;">Confirmar Contraseña
+          <input type="password" id="registerPassword2" required minlength="6" placeholder="Repite la contraseña" style="margin-top: 5px;">
+        </label>
+        <button type="submit" class="button primary" style="width: 100%;">Crear cuenta</button>
+        <div style="text-align: center; font-size: 14px; margin-top: 10px;">
+          <span>¿Ya tienes cuenta? <a href="#" id="goToLoginFromRegister" style="color: #167449; font-weight: bold; text-decoration: none;">Inicia sesión</a></span>
+        </div>
+      </form>
+
+      <!-- FORMULARIO DE RECUPERACIÓN (Oculto) -->
+      <form id="resetForm" style="display: none; flex-direction: column; gap: 15px;">
+        <p style="font-size: 14px; color: #555;">Escribe tu correo y te enviaremos un enlace para restablecer tu contraseña.</p>
+        <label style="text-align: left; font-size: 14px;">Correo
+          <input type="email" id="resetEmail" required placeholder="tu@correo.com" style="margin-top: 5px;">
+        </label>
+        <button type="submit" class="button primary" style="width: 100%;">Enviar enlace</button>
+        <div style="text-align: center; font-size: 14px; margin-top: 10px;">
+          <a href="#" id="goToLoginFromReset" style="color: #167449; font-weight: bold; text-decoration: none;">Volver a iniciar sesión</a>
+        </div>
+      </form>
+
+      <!-- MENSAJES DE ERROR O ÉXITO -->
+      <p id="loginMessage" class="message" style="margin-top: 20px; text-align: center; font-weight: bold;"></p>
     </div>
   </div>
 
-  <!-- PANTALLA DEL INVENTARIO (Oculta al inicio) -->
+  <!-- PANTALLA DEL INVENTARIO (Oculta hasta iniciar sesión) -->
   <div id="appContent" style="display: none;">
     <header class="topbar">
       <div>
@@ -43,7 +80,7 @@
         <p class="subtitle">Administra tus productos desde un solo lugar.</p>
       </div>
       <div style="display: flex; gap: 10px; align-items: center;">
-        <span id="connectionBadge" class="badge">Sin conectar</span>
+        <span id="connectionBadge" class="badge">Sesión activa</span>
         <button id="logoutBtn" class="button secondary" style="background: #b53b3b; color: white;">Cerrar Sesión</button>
       </div>
     </header>

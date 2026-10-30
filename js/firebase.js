@@ -3,7 +3,7 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.0/firebase
 import { getAuth } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB6KS4luN1QD3mT26lTrkJ7m1dh3tUbO10", // Corregido (cero en vez de O)
+  apiKey: "AIzaSyB6KS4luN1QD3mT26LtrkJ7m1dh3tUb010", 
   authDomain: "vantastock-fa450.firebaseapp.com",
   projectId: "vantastock-fa450",
   storageBucket: "vantastock-fa450.firebasestorage.app",
