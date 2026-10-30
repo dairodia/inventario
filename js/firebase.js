@@ -1,8 +1,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB6KS4luN1QD3mT26LtrkJ7m1dh3tUbO10",
+  apiKey: "AIzaSyB6KS4luN1QD3mT26lTrkJ7m1dh3tUbO10", // Corregido (cero en vez de O)
   authDomain: "vantastock-fa450.firebaseapp.com",
   projectId: "vantastock-fa450",
   storageBucket: "vantastock-fa450.firebasestorage.app",
@@ -13,6 +14,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 const isConfigured = true; 
 
-export { db, isConfigured };
+export { db, auth, isConfigured };

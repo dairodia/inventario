@@ -1,8 +1,15 @@
-import { db, isConfigured } from "./firebase.js";
+import { db, auth, isConfigured } from "./firebase.js";
 import {
-  collection, addDoc, getDocs, updateDoc, deleteDoc, doc,
+  collection, addDoc, updateDoc, deleteDoc, doc,
   onSnapshot, query, orderBy
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import {
+  signInWithEmailAndPassword, 
+  signOut, 
+  onAuthStateChanged,
+  GoogleAuthProvider, 
+  signInWithPopup
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 const $ = (id) => document.getElementById(id);
 const form = $("productForm");
@@ -15,6 +22,7 @@ const money = (value) => new Intl.NumberFormat("es-CO", {
 let products = [];
 let unsubscribe = null;
 
+// --- LÓGICA DEL INVENTARIO ---
 function setMessage(text, error = false) {
   message.textContent = text;
   message.style.color = error ? "#b53b3b" : "#167449";
@@ -82,7 +90,6 @@ function resetForm() {
 }
 
 async function removeProduct(id) {
-  if (!db) return setMessage("Primero configura Firebase en firebase.js.", true);
   if (!confirm("¿Seguro que quieres eliminar este producto?")) return;
   try {
     await deleteDoc(doc(db, "productos", id));
@@ -95,7 +102,6 @@ async function removeProduct(id) {
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
-  if (!db) return setMessage("Falta conectar Firebase. Sigue los pasos de firebase.js.", true);
   const product = {
     name: $("name").value.trim(),
     category: $("category").value.trim(),
@@ -121,22 +127,74 @@ form.addEventListener("submit", async (event) => {
 $("cancelEdit").addEventListener("click", resetForm);
 $("search").addEventListener("input", render);
 
-if (isConfigured && db) {
-  $("connectionBadge").textContent = "Firebase configurado";
-  $("connectionBadge").style.background = "#e0f7e9";
-  $("connectionBadge").style.color = "#17633e";
-  const q = query(collection(db, "productos"), orderBy("name"));
-  unsubscribe = onSnapshot(q, snapshot => {
-    products = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-    render();
-  }, error => {
-    console.error(error);
-    setMessage("No se pudieron leer los productos. Revisa las reglas de Firestore.", true);
-  });
-} else {
-  $("connectionBadge").textContent = "Falta configurar Firebase";
-  products = [];
-  render();
+// --- LÓGICA DE AUTENTICACIÓN (LOGIN) ---
+const loginScreen = $("loginScreen");
+const appContent = $("appContent");
+const loginMessage = $("loginMessage");
+
+function setLoginMessage(text, error = false) {
+  loginMessage.textContent = text;
+  loginMessage.style.color = error ? "#b53b3b" : "#167449";
 }
+
+// Iniciar sesión con correo
+$("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  setLoginMessage("");
+  try {
+    await signInWithEmailAndPassword(auth, $("loginEmail").value, $("loginPassword").value);
+  } catch (error) {
+    setLoginMessage("Error: " + error.message, true);
+  }
+});
+
+// Iniciar sesión con Google
+$("googleBtn").addEventListener("click", async () => {
+  const provider = new GoogleAuthProvider();
+  try {
+    await signInWithPopup(auth, provider);
+  } catch (error) {
+    setLoginMessage("Error con Google: " + error.message, true);
+  }
+});
+
+// Cerrar sesión
+$("logoutBtn").addEventListener("click", () => {
+  signOut(auth);
+});
+
+// --- MOSTRAR U OCULTAR PANTALLAS SEGÚN LA SESIÓN ---
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // Usuario logueado
+    loginScreen.style.display = "none";
+    appContent.style.display = "block";
+    
+    // Activar escucha de Firestore si no está activa
+    if (!unsubscribe && isConfigured && db) {
+      $("connectionBadge").textContent = "Firebase configurado";
+      $("connectionBadge").style.background = "#e0f7e9";
+      $("connectionBadge").style.color = "#17633e";
+      const q = query(collection(db, "productos"), orderBy("name"));
+      unsubscribe = onSnapshot(q, snapshot => {
+        products = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        render();
+      }, error => {
+        console.error(error);
+        setMessage("No se pudieron leer los productos.", true);
+      });
+    }
+  } else {
+    // Usuario no logueado
+    loginScreen.style.display = "flex";
+    appContent.style.display = "none";
+    if (unsubscribe) {
+      unsubscribe();
+      unsubscribe = null;
+    }
+    products = [];
+    render();
+  }
+});
 
 window.addEventListener("beforeunload", () => unsubscribe?.());
